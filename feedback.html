@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Cars24 — Share Your Feedback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --cars24-purple: #4f2dec;
+      --cars24-purple-dark: #3b20c4;
+      --cars24-purple-light: #6b4fff;
+      --star-gold: #ffb400;
+      --star-grey: #d8d8de;
+      --text-primary: #1a1a2e;
+      --text-secondary: #5a5a72;
+      --bg-input: #f5f5f9;
+      --border: #e3e3ea;
+      --error: #d63636;
+      --success: #16a34a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      background: var(--cars24-purple);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 40px 48px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .logo img {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+      line-height: 1.4;
+    }
+
+    .field { margin-bottom: 28px; }
+
+    .field label.q-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .field .help-text {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .required-mark {
+      color: var(--error);
+      margin-left: 2px;
+    }
+
+    /* ===== Star rating ===== */
+    .star-rating {
+      display: inline-flex;
+      flex-direction: row-reverse;
+      gap: 6px;
+    }
+
+    .star-rating input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .star-rating label {
+      cursor: pointer;
+      color: var(--star-grey);
+      font-size: 36px;
+      line-height: 1;
+      transition: color 0.15s ease, transform 0.15s ease;
+      user-select: none;
+    }
+
+    .star-rating label:hover { transform: scale(1.1); }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input[type="radio"]:checked ~ label {
+      color: var(--star-gold);
+    }
+
+    /* ===== Issue resolved (Yes/No pills) ===== */
+    .yn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .yn-option {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .yn-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .yn-option .yn-pill {
+      display: inline-block;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: #ffffff;
+      transition: all 0.15s ease;
+    }
+
+    .yn-option:hover .yn-pill {
+      border-color: var(--cars24-purple-light);
+      color: var(--cars24-purple);
+    }
+
+    .yn-option input[type="radio"]:checked + .yn-pill {
+      background: var(--cars24-purple);
+      color: #ffffff;
+      border-color: var(--cars24-purple);
+    }
+
+    /* ===== Textarea ===== */
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-input);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-primary);
+      resize: vertical;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--cars24-purple);
+      background: #ffffff;
+    }
+
+    /* ===== Submit button ===== */
+    .btn-submit {
+      background: var(--cars24-purple);
+      color: #ffffff;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.05s ease;
+      font-family: inherit;
+    }
+
+    .btn-submit:hover:not(:disabled) { background: var(--cars24-purple-dark); }
+    .btn-submit:active:not(:disabled) { transform: translateY(1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ===== Footer ===== */
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 13px;
+    }
+
+    /* ===== Error states ===== */
+    .error-msg {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .form-error-banner {
+      display: none;
+      background: #fdeaea;
+      border-left: 4px solid var(--error);
+      color: var(--error);
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .form-error-banner.show { display: block; }
+
+    /* ===== Thank-you state ===== */
+    .thankyou {
+      text-align: center;
+      padding: 24px 0;
+    }
+
+    .thankyou .check {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      background: #eaf8ee;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--success);
+      font-size: 36px;
+      font-weight: 600;
+    }
+
+    .thankyou h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .thankyou p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ===== Mobile ===== */
+    @media (max-width: 540px) {
+      .card { padding: 28px 22px; }
+      h1 { font-size: 18px; }
+      .star-rating label { font-size: 32px; }
+      .yn-option .yn-pill { padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card" id="card">
+      <!-- ===== Logo ===== -->
+      <div class="logo">
+        <img
+          src="https://static-cdn.cars24.com/qa/cms/2026/01/13/940812f6-6919-4633-a5de-e3b98457bfd8cars24-blue-logo.png"
+          alt="Cars24"
+        />
+      </div>
+
+      <!-- ===== Form view ===== -->
+      <div id="form-view">
+        <h1 id="heading">Cars24 would love your feedback</h1>
+
+        <div class="form-error-banner" id="error-banner">
+          Something went wrong. Please try again.
+        </div>
+
+        <form id="csat-form" novalidate>
+          <!-- Star rating -->
+          <div class="field">
+            <label class="q-label" for="rating-5">
+              How was your experience?<span class="required-mark">*</span>
+            </label>
+            <span class="help-text" id="help-text">
+              How satisfied are you with the quality of service provided by our agent on this call?
+            </span>
+            <div class="star-rating" role="radiogroup" aria-label="Agent rating">
+              <input type="radio" id="rating-5" name="rating" value="5" />
+              <label for="rating-5" title="5 stars">★</label>
+              <input type="radio" id="rating-4" name="rating" value="4" />
+              <label for="rating-4" title="4 stars">★</label>
+              <input type="radio" id="rating-3" name="rating" value="3" />
+              <label for="rating-3" title="3 stars">★</label>
+              <input type="radio" id="rating-2" name="rating" value="2" />
+              <label for="rating-2" title="2 stars">★</label>
+              <input type="radio" id="rating-1" name="rating" value="1" />
+              <label for="rating-1" title="1 star">★</label>
+            </div>
+            <div class="error-msg" id="rating-error">Please select a rating.</div>
+          </div>
+
+          <!-- Issue resolved -->
+          <div class="field">
+            <label class="q-label">
+              Was your issue resolved?<span class="required-mark">*</span>
+            </label>
+            <div class="yn-group" role="radiogroup" aria-label="Issue resolved">
+              <label class="yn-option">
+                <input type="radio" name="issue_resolved" value="Yes" />
+                <span class="yn-pill">Yes</span>
+              </label>
+              <label class="yn-option">
+                <input type="radio" name="issue_resolved" value="No" />
+                <span class="yn-pill">No</span>
+              </label>
+            </div>
+            <div class="error-msg" id="issue-error">Please select an option.</div>
+          </div>
+
+          <!-- Additional feedback -->
+          <div class="field">
+            <label class="q-label" for="feedback">
+              Anything else you want to share with us?
+            </label>
+            <textarea
+              id="feedback"
+              name="additional_feedback"
+              placeholder="Your feedback helps us improve..."
+              maxlength="2000"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="submit-btn">Submit</button>
+        </form>
+      </div>
+
+      <!-- ===== Thank-you view ===== -->
+      <div id="thankyou-view" class="thankyou hidden">
+        <div class="check">✓</div>
+        <h2>Thank you for your feedback!</h2>
+        <p>We appreciate you taking the time to share your experience.</p>
+      </div>
+    </div>
+
+    <div class="footer">This survey is a service from Cars24.</div>
+  </div>
+
+  <script>
+    /* =====================================================================
+     *  CONFIG  —  Set this to your deployed Cloudflare Worker URL
+     * ===================================================================== */
+    const SUBMIT_ENDPOINT = 'https://cars24-csat-backend.nand-kishor1.workers.dev/api/csat/submit';
+    /* ===================================================================== */
+
+    // ----- Read URL params -----
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name) || '';
+    }
+
+    const ticketId       = getParam('ticket_id');
+    const agentName      = getParam('agent_name');
+    const ticketSubject  = getParam('ticket_subject');
+    const callDuration   = getParam('call_duration');
+
+    // ----- Personalize heading with agent name -----
+    if (agentName) {
+      document.getElementById('heading').textContent =
+        'How was your call with ' + agentName + '?';
+      document.getElementById('help-text').textContent =
+        'How satisfied are you with the quality of service provided by ' + agentName + ' on this call?';
+    }
+
+    // ----- Form submission -----
+    const form        = document.getElementById('csat-form');
+    const submitBtn   = document.getElementById('submit-btn');
+    const errorBanner = document.getElementById('error-banner');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Reset errors
+      errorBanner.classList.remove('show');
+      document.getElementById('rating-error').classList.remove('show');
+      document.getElementById('issue-error').classList.remove('show');
+
+      // Validate
+      const rating        = form.querySelector('input[name="rating"]:checked');
+      const issueResolved = form.querySelector('input[name="issue_resolved"]:checked');
+      let valid = true;
+
+      if (!rating) {
+        document.getElementById('rating-error').classList.add('show');
+        valid = false;
+      }
+      if (!issueResolved) {
+        document.getElementById('issue-error').classList.add('show');
+        valid = false;
+      }
+      if (!ticketId) {
+        errorBanner.textContent = 'Invalid feedback link. Please contact support.';
+        errorBanner.classList.add('show');
+        valid = false;
+      }
+      if (!valid) return;
+
+      // Build payload
+      const payload = {
+        ticket_id: ticketId,
+        agent_name: agentName,
+        ticket_subject: ticketSubject,
+        call_duration: callDuration,
+        rating: rating.value,
+        issue_resolved: issueResolved.value,
+        additional_feedback: document.getElementById('feedback').value.trim(),
+        submitted_at: new Date().toISOString()
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const res = await fetch(SUBMIT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          throw new Error('Server returned ' + res.status);
+        }
+
+        // Show thank-you state
+        document.getElementById('form-view').classList.add('hidden');
+        document.getElementById('thankyou-view').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        console.error('Submission failed:', err);
+        errorBanner.textContent =
+          'Could not submit your feedback. Please try again in a moment.';
+        errorBanner.classList.add('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+      }
+    });
+  </script>
+</body>
+</html>
